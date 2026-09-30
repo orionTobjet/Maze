@@ -1,57 +1,68 @@
-#include <SDL2/SDL.h>
-#include <stdio.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ncurses.h>
 
-int main(int argc, char *argv[])
+int moove(int *state, int taille, int * x, int * y){
+  int tx = *x;
+  int ty = *y;
+  int touche = getch();
+    switch(touche){
+      case KEY_UP:
+        tx--; break;
+      case KEY_DOWN:
+        tx++;break;
+      case KEY_RIGHT:
+        ty++;break;
+      case KEY_LEFT:
+        ty--;break;
+      case 'q':
+         * state=0;
+         break;
+      case ERR:
+            break;
+    }
+    if(ty>=taille || ty<0 ||tx>=taille || tx<0){
+      printw("coordonnés impossible");
+      return 0;
+    }
+    else{
+        *x=tx;
+        *y=ty;
+    return 1;
+    }
+}
+
+int main(void)
 {
-    // 1. Initialisation
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("Erreur SDL_Init: %s\n", SDL_GetError());
-        return 1;
+  initscr(); // Initialise l'écran ncurses 
+  cbreak(); // Mode temps réel (sans 'Entrée') 
+  noecho(); // Masque la saisie des touches 
+  keypad(stdscr, TRUE); // Active la prise en charge facile des flèches
+                        //
+  char ** grille = (char**) malloc(10 * sizeof(char*));
+  for(int i = 0;i<10;i++){
+    grille[i] = (char*) malloc(10 * sizeof(char));
+  }
+  // j'ai ma matrice maintenant je veux déplacer un perso dans la matrice 
+  int x = 0;
+  int y = 0;
+  int state = 1;
+  while(state){
+    int m =moove(&state, 10,&x, &y); 
+    if(m){
+    clear();
+  for (int i =0;i<10;i++) {
+    for (int j=0;j<10;j++) {
+      grille[i][j]='#';
+      grille[x][y]='*';
+        printw(" %c ", grille[i][j]);
     }
-
-    // 2. Création de la fenêtre
-    SDL_Window* window = SDL_CreateWindow("Mon Jeu SDL2", 
-                                          SDL_WINDOWPOS_CENTERED, 
-                                          SDL_WINDOWPOS_CENTERED, 
-                                          800, 600, SDL_WINDOW_SHOWN);
-    if (!window) {
-        printf("Erreur SDL_CreateWindow: %s\n", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    // 3. Création du renderer
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer) {
-        printf("Erreur SDL_CreateRenderer: %s\n", SDL_GetError());
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
-
-    bool run = true;
-    SDL_Event event;
-
-    // 4. Boucle principale (Game Loop)
-    while (run) {
-        // Gestion des événements (clavier, souris, clic croix)
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                run = false;
-            }
-        }
-
-        // Rendu graphique
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-        SDL_RenderPresent(renderer);
-    }
-
-    // 5. Nettoyage de la mémoire
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
-    return 0;
+    printw("\n");
+  }
+  refresh();
+  }
+  timeout(1000);
+  }
+  endwin();
 }
