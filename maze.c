@@ -18,3 +18,20 @@ int** initMaze(int** maze, int width, int height){
 
 }   
 
+
+
+bool is_available(int** maze, int x, int y, int width, int height){
+
+    if ((x<width-1 && x>0  && y < height-1 && y> 0 ) && maze[y][x] == 1 ){
+        return true ;
+    }
+    else {
+        return false ;
+    }
+
+}
+
+
+
+void 
+
