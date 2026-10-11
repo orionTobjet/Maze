@@ -32,6 +32,24 @@ bool is_available(int** maze, int x, int y, int width, int height){
 }
 
 
+void CreatePath(int** maze, int x, int y, int width, int height){
+    int i = 0;
+    int max_saize = width* height ; 
+    int* queue_x = malloc(max_saize*sizeof(int));
+    int* queue_y= malloc(max_saize*sizeof(int)); // array who saves the cells we've been through
 
-void 
+    // en gros ça stock chaque case quon va parcourir 
+    maze[y][x] = 0; // we "dig" our first cell 
+    queue_x = x;
+    queue_y =y;
+    i++;
+    
 
+
+
+
+
+
+
+
+}
