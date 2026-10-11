@@ -32,6 +32,8 @@ bool is_available(int** maze, int x, int y, int width, int height){
 }
 
 
+
+
 void CreatePath(int** maze, int x, int y, int width, int height){
     int i = 0;
     int max_saize = width* height ; 
@@ -40,9 +42,27 @@ void CreatePath(int** maze, int x, int y, int width, int height){
 
     // en gros ça stock chaque case quon va parcourir 
     maze[y][x] = 0; // we "dig" our first cell 
-    queue_x = x;
-    queue_y =y;
+    queue_x[i] = x;
+    queue_y[i] =y;
     i++;
+
+    //commence a boucler jusqu'a trouver un cul de sac 
+    int dx={0,1, 0, -1};
+    int dy={1,0,-1,0};
+    while(i>0){
+        int pull_next = rand()%4;
+        if(is_available(maze,(x+dx[&pull_next]) ,(y+dy[&pull_next]), width, height)){
+            x +=dx[&pull_next];
+            y+=dy[&pull_next];
+            maze[y][x] = 0; // we "dig" our first cell 
+        queue_x[i]= x;
+        queue_y[i] =y;
+        i++;
+        }else{
+            i--;
+        }
+
+    }
     
 
 
